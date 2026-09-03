@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡La Gran Fiesta del Héroe!</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* VARIABLES DE DISEÑO */
+    :root {
+      --gold: #f5b041;
+      --gold-dark: #d4ac0d;
+      --sky-top: #1a365d;
+      --sky-bottom: #2b6cb0;
+      --cloud-white: rgba(255, 255, 255, 0.95);
+      --text-main: #2c3e50;
+      --hero-orange: #e67e22;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--sky-top) 0%, var(--sky-bottom) 50%, #4299e1 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text-main);
+      position: relative;
+    }
+
+    /* ANIMACIONES */
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 25px rgba(245, 176, 65, 0.4); }
+      100% { transform: scale(1.03); box-shadow: 0 0 45px rgba(245, 176, 65, 0.8); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes glow {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(245, 176, 65, 0.6)); }
+      50% { filter: drop-shadow(0 0 18px rgba(245, 176, 65, 1)); }
+    }
+
+    @keyframes pulse-scale {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.12); }
+    }
+
+    /* PANTALLA 1: EL PERGAMINO / SOBRE DE BIENVENIDA */
+    #hero-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle, #1a202c 0%, #0f172a 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      cursor: pointer;
+      transition: opacity 0.8s ease, transform 0.8s ease, visibility 0.8s;
+      padding: 0;
+    }
+
+    #hero-overlay.hidden {
+      opacity: 0;
+      transform: translateY(-100%);
+      visibility: hidden;
+    }
+
+    /* IMAGEN CLICABLE DE INICIO */
+    .hero-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: pointer;
+    }
+
+    .hero-message {
+      position: absolute;
+      top: 66%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: 2.6rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #ffe28a;
+      -webkit-text-stroke: 1.5px #7a4a00;
+      text-shadow: 0 0 14px rgba(255, 226, 138, 1), 0 0 34px rgba(245, 176, 65, 0.85), 3px 3px 6px rgba(0,0,0,0.85), -1px -1px 2px rgba(0,0,0,0.6);
+      animation: pulse-scale 1.8s infinite ease-in-out;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* PANTALLA DE VIDEO */
+    #video-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 150;
+    }
+
+    #video-overlay.active {
+      display: flex;
+    }
+
+    #hero-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #000;
+    }
+
+    .scroll-card {
+      background: linear-gradient(145deg, #fefae0 0%, #f4e8c1 100%);
+      border: 8px solid #b8860b;
+      border-radius: 20px;
+      padding: 40px 25px;
+      text-align: center;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 0 35px rgba(245, 176, 65, 0.5), inset 0 0 20px rgba(184, 134, 11, 0.2);
+      animation: pulse 2.5s infinite alternate ease-in-out;
+      position: relative;
+    }
+
+    .scroll-card::before, .scroll-card::after {
+      content: '🏛️';
+      font-size: 1.8rem;
+      position: absolute;
+      top: 10px;
+    }
+    .scroll-card::before { left: 15px; }
+    .scroll-card::after { right: 15px; }
+
+    .scroll-card i.fa-bolt {
+      font-size: 4.5rem;
+      color: var(--gold);
+      text-shadow: 0 0 20px #f39c12;
+      margin-bottom: 15px;
+      animation: float 3s infinite ease-in-out;
+    }
+
+    .scroll-card h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: #5c3a21;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .scroll-card p {
+      font-size: 1.1rem;
+      color: #7f5539;
+      font-weight: 600;
+    }
+
+    .tap-hint {
+      margin-top: 25px;
+      display: inline-block;
+      background: linear-gradient(135deg, #b8860b 0%, #d4ac0d 100%);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+
+    .tap-hint i {
+      margin-left: 8px;
+    }
+
+    /* PANTALLA 2: EL MONTE OLIMPO */
+    .main-container {
+      min-height: 100vh;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 150px 20px 40px;
+      position: relative;
+      overflow: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 20%, rgba(255,255,255,0.3) 0%, transparent 60%),
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.2) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.2) 0%, transparent 40%);
+    }
+
+    .bg-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .main-container > *:not(.bg-video) {
+      position: relative;
+      z-index: 1;
+    }
+
+    .unmute-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 20;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      border: 2px solid var(--gold);
+      border-radius: 25px;
+      padding: 10px 18px;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: background 0.3s ease;
+    }
+
+    .unmute-btn:hover {
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+
+    /* Placa de Mármol Central */
+    .marble-card {
+      background: var(--cloud-white);
+      border: 5px solid var(--gold);
+      border-radius: 28px;
+      padding: 48px 28px 10px 28px;
+      max-width: 520px;
+      width: 100%;
+      min-height: 722px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+      position: relative;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+
+    .marble-card::before {
+      content: '';
+      position: absolute;
+      top: -87px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 225px;
+      height: 112px;
+      background: var(--cloud-white);
+      border: 5px solid var(--gold);
+      border-bottom: none;
+      border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+      z-index: -1;
+    }
+
+    .laurel-icon {
+      position: absolute;
+      top: -87px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 224px;
+      height: 224px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .medal-img {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      filter: drop-shadow(0 0 12px rgba(245, 176, 65, 0.7));
+      animation: glow 3s infinite alternate;
+    }
+
+    .corner-photo {
+      position: absolute;
+      top: -110px;
+      right: -75px;
+      height: 312px;
+      width: auto;
+      object-fit: contain;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .corner-photo-left {
+      right: auto;
+      left: -125px;
+      top: 410px;
+    }
+
+    .subtitle-header {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      color: #7f8c8d;
+      text-transform: uppercase;
+      margin-top: 100px;
+      margin-bottom: 5px;
+    }
+
+    #section-2 .subtitle-header {
+      margin-top: 0;
+    }
+
+    .title-header {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      color: #1a252f;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0,0,0,0.15);
+      margin-bottom: 5px;
+      font-weight: 900;
+    }
+
+    .kid-name-img {
+      max-width: 280px;
+      width: 100%;
+      height: auto;
+      margin-bottom: 15px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #d35400;
+      color: white;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3);
+    }
+
+    /* CONTADOR REGRESIVO TEMÁTICO */
+    .countdown-container {
+      background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+      color: white;
+      border-radius: 16px;
+      padding: 18px 12px;
+      margin: 20px 0 0 0;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.15);
+      border: 2px solid var(--gold);
+    }
+
+    .countdown-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .countdown-timer {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .timer-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .timer-val {
+      font-family: 'Cinzel', serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    .timer-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      color: #a0aec0;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    .timer-sep {
+      font-size: 1.4rem;
+      color: var(--gold);
+      font-weight: bold;
+      margin-top: -10px;
+    }
+
+    .event-info {
+      margin: 25px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .rsvp-message {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--gold-dark);
+      margin-top: 20px;
+      letter-spacing: 1px;
+    }
+
+    .info-item {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1.5px solid rgba(245, 176, 65, 0.6);
+      padding: 14px 18px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 15px;
+      text-align: left;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease;
+    }
+
+    .info-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .info-item-link {
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .info-item i {
+      font-size: 1.6rem;
+      color: #d35400;
+      width: 32px;
+      text-align: center;
+    }
+
+    .info-item div p:first-child {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #7f8c8d;
+    }
+
+    .info-item div p:last-child {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Botón de Confirmación completado */
+    .btn-confirm {
+      display: inline-block;
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold) 0%, #e67e22 100%);
+      color: white;
+      text-decoration: none;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding: 16px 20px;
+      border-radius: 50px;
+      box-shadow: 0 5px 15px rgba(230, 126, 34, 0.4);
+      transition: all 0.3s ease;
+      border: 2px solid #fff;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-confirm:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 22px rgba(230, 126, 34, 0.6);
+      background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
+    }
+
+    .btn-confirm i {
+      margin-right: 8px;
+    }
+
+    /* NAVEGACIÓN POR SECCIONES */
+    .card-section {
+      display: none;
+    }
+
+    .card-section.active {
+      display: block;
+    }
+
+    .section-nav-arrow {
+      margin-top: 0;
+      background: none;
+      border: none;
+      color: var(--gold-dark);
+      font-size: 5.4rem;
+      cursor: pointer;
+      animation: float 2s infinite ease-in-out;
+      transition: color 0.3s ease;
+    }
+
+    .section-nav-arrow:hover {
+      color: var(--gold);
+    }
+
+    .section-nav-arrow-up {
+      margin-top: 0;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    @media (max-width: 480px) {
+      .marble-card { padding: 30px 20px; }
+      .title-header { font-size: 1.8rem; }
+      .kid-name { font-size: 2.2rem; }
+    }
+    .tap-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3.5rem;
+      color: #ffe28a;
+      text-shadow: 0 0 14px rgba(255, 226, 138, 1), 0 0 34px rgba(245, 176, 65, 0.85), 3px 3px 6px rgba(0,0,0,0.85);
+      filter: drop-shadow(0 0 6px rgba(0,0,0,0.7));
+      animation: pulse-scale-center 1.8s infinite ease-in-out;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    @keyframes pulse-scale-center {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.12); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PANTALLA 1: IMAGEN INICIAL CLICABLE -->
+  <div id="hero-overlay" onclick="reproducirVideo()">
+    <img src="media/imagen1.jpeg" alt="Toca para abrir la invitación" class="hero-image">
+    <p class="hero-message">¡Fuiste invitado a la gran hazaña!!!</p>
+    <i class="fa-solid fa-hand-pointer tap-icon"></i>
+  </div>
+
+  <!-- PANTALLA DE VIDEO -->
+  <div id="video-overlay">
+    <video id="hero-video" src="media/video1.mp4" playsinline></video>
+  </div>
+
+  <!-- PANTALLA 2: EL MONTE OLIMPO & DETALLES -->
+
+  <div class="main-container">
+    <video id="bg-video" class="bg-video" src="media/video2.mp4" loop playsinline></video>
+    <button id="unmute-btn" class="unmute-btn" onclick="activarSonido()" style="display:none;">
+      <i class="fa-solid fa-volume-xmark"></i> Activar sonido
+    </button>
+    <div class="marble-card">
+      <div class="laurel-icon">
+        <img src="media/medalla.png" alt="Medalla" class="medal-img">
+      </div>
+
+      <img src="media/eric.png" alt="Eric" class="corner-photo">
+      <img src="media/eric2.png" alt="Eric" class="corner-photo corner-photo-left">
+
+      <!-- SECCIÓN 1 -->
+      <div class="card-section active" id="section-1">
+        <p class="subtitle-header">¡De Cero a Héroe!</p>
+        <h1 class="title-header">FIESTA DE CUMPLEAÑOS DE</h1>
+        <img src="media/nombre.png" alt="HERCULES" class="kid-name-img">
+        <span class="hero-badge">¡CUMPLE 1 AÑITO!</span>
+
+        <!-- CONTADOR REGRESIVO -->
+        <div class="countdown-container">
+          <div class="countdown-title">Tiempo para la Hazaña</div>
+          <div class="countdown-timer">
+            <div class="timer-unit">
+              <span class="timer-val" id="days">00</span>
+              <span class="timer-label">Días</span>
+            </div>
+            <span class="timer-sep">:</span>
+            <div class="timer-unit">
+              <span class="timer-val" id="hours">00</span>
+              <span class="timer-label">Horas</span>
+            </div>
+            <span class="timer-sep">:</span>
+            <div class="timer-unit">
+              <span class="timer-val" id="minutes">00</span>
+              <span class="timer-label">Min</span>
+            </div>
+            <span class="timer-sep">:</span>
+            <div class="timer-unit">
+              <span class="timer-val" id="seconds">00</span>
+              <span class="timer-label">Seg</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="section-nav-arrow" onclick="irASeccion(2)" aria-label="Siguiente sección" style="margin-bottom: 0;">
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+      </div>
+
+      <!-- SECCIÓN 2 -->
+      <div class="card-section" id="section-2">
+        <button class="section-nav-arrow section-nav-arrow-up" onclick="irASeccion(1)" aria-label="Sección anterior">
+          <i class="fa-solid fa-chevron-up"></i>
+        </button>
+
+        <img src="media/nombre.png" alt="HERCULES" class="kid-name-img">
+
+        <!-- DETALLES DEL EVENTO -->
+        <div class="event-info">
+          <div class="info-item">
+            <i class="fa-solid fa-calendar-day"></i>
+            <div>
+              <p>Fecha del Olimpo</p>
+              <p>Sábado, 12 de Septiembre</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <i class="fa-solid fa-clock"></i>
+            <div>
+              <p>Hora de Inicio</p>
+              <p>15:00 HRS</p>
+            </div>
+          </div>
+
+          <a href="https://maps.app.goo.gl/9akcQugCsSPPxfSJ6" target="_blank" class="info-item info-item-link">
+            <i class="fa-solid fa-map-location-dot"></i>
+            <div>
+              <p>Lugar de la Celebración</p>
+              <p>Parque Inflapark Calle: Llunki Yupanki entre Apukamajj y Inka rok´a</p>
+            </div>
+          </a>
+        </div>
+
+        <p class="rsvp-message">No faltes, te esperamos...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Flujo: imagen -> video -> ventana de información
+    function reproducirVideo() {
+      const heroOverlay = document.getElementById('hero-overlay');
+      const videoOverlay = document.getElementById('video-overlay');
+      const video = document.getElementById('hero-video');
+
+      heroOverlay.classList.add('hidden');
+      videoOverlay.classList.add('active');
+
+      video.currentTime = 0;
+      video.play();
+    }
+
+    document.getElementById('hero-video').addEventListener('ended', function () {
+      const videoOverlay = document.getElementById('video-overlay');
+      const mainContainer = document.querySelector('.main-container');
+
+      videoOverlay.classList.remove('active');
+      mainContainer.style.display = 'flex';
+
+      // Intenta reproducir el video de fondo CON sonido.
+      // Si el navegador lo bloquea, se muestra el botón para activarlo manualmente.
+      const bgVideo = document.getElementById('bg-video');
+      bgVideo.muted = false;
+      bgVideo.play().catch(function () {
+        document.getElementById('unmute-btn').style.display = 'block';
+      });
+    });
+
+    function activarSonido() {
+      const bgVideo = document.getElementById('bg-video');
+      bgVideo.muted = false;
+      bgVideo.play();
+      document.getElementById('unmute-btn').style.display = 'none';
+    }
+
+    // Navegación entre secciones del box de información
+    function irASeccion(numero) {
+      document.querySelectorAll('.card-section').forEach(function (section) {
+        section.classList.remove('active');
+      });
+      document.getElementById('section-' + numero).classList.add('active');
+    }
+
+    // Cuenta Regresiva (Ajusta la fecha objetivo según tu evento)
+    const targetDate = new Date(2026, 8, 12, 15, 0, 0); // Sábado, 12 de Septiembre 2026, 15:00 hrs
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((difference % (1000 * 60)) / 1000);
+
+        document.getElementById('days').innerText = d < 10 ? '0' + d : d;
+        document.getElementById('hours').innerText = h < 10 ? '0' + h : h;
+        document.getElementById('minutes').innerText = m < 10 ? '0' + m : m;
+        document.getElementById('seconds').innerText = s < 10 ? '0' + s : s;
+      }
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+</body>
+</html>
